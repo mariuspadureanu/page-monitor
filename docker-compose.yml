@@ -1,0 +1,33 @@
+# IBM Page Monitor - Docker Compose Configuration
+version: "3.8"
+
+services:
+  monitor:
+    build: .
+    container_name: ibm-page-monitor
+    restart: unless-stopped
+
+    # Environment variables from .env file
+    env_file:
+      - .env
+
+    # Mount volumes for persistence
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./config:/app/config
+      - ./all-offerings-pages.xlsx:/app/all-offerings-pages.xlsx
+
+    # Timezone
+    environment:
+      - TZ=Europe/Bucharest
+
+    # Health check
+    healthcheck:
+      test: ["CMD", "python", "-c", "import sys; sys.exit(0)"]
+      interval: 1h
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+# Made with Bob
